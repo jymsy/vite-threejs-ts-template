@@ -45,8 +45,13 @@ export default class World {
     this.camera.position.set(100, 100, 100);
     this.camera.lookAt(0, 0, 0);
 
+    // this.camera = new PerspectiveCamera(50, aspect, 1, 3000);
+    // this.camera.position.set(-30, -8, 10);
+    // this.camera.lookAt(30, -8, 10);
+
+    // 环境光 漫反射
     const ambient = new AmbientLight(0xffffff, 0.4);
-    // scene.add(ambient);
+    this.scene.add(ambient);
 
     // const dirLightHelper = new DirectionalLightHelper(
     //   directionalLight,
