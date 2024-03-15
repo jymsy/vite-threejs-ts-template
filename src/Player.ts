@@ -25,6 +25,7 @@ import {
   CubeTextureLoader,
   Euler,
 } from "three";
+import { RigidBodyDesc, ColliderDesc } from "@dimforge/rapier3d-compat";
 import World from "./World";
 
 export default class Player {
@@ -36,6 +37,7 @@ export default class Player {
   moveBackward = false;
   moveLeft = false;
   moveRight = false;
+  collider;
 
   constructor(world: World) {
     const geometry = new BoxGeometry(1, 1, 1);
@@ -51,6 +53,12 @@ export default class Player {
 
     document.addEventListener("keydown", this.handleKeyDown);
     document.addEventListener("keyup", this.handleKeyUp);
+
+    let rigidBodyDesc = RigidBodyDesc.dynamic().setTranslation(-25, -8, 10);
+    let rigidBody = world.physicsWorld.createRigidBody(rigidBodyDesc);
+
+    let example1 = ColliderDesc.ball(0.5);
+    this.collider = world.physicsWorld.createCollider(example1, rigidBody);
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -97,13 +105,16 @@ export default class Player {
     const delta = this.clock.getDelta();
     const distance = delta * 10;
 
-    this.moveVelocity.x = Number(this.moveForward) - Number(this.moveBackward);
-    this.moveVelocity.z = Number(this.moveRight) - Number(this.moveLeft);
+    const position = this.collider.translation();
+    this.model.position.set(position.x, position.y, position.z);
 
-    this.moveVelocity.applyEuler(new Euler(0, this.control.euler.y, 0));
+    // this.moveVelocity.x = Number(this.moveForward) - Number(this.moveBackward);
+    // this.moveVelocity.z = Number(this.moveRight) - Number(this.moveLeft);
 
-    this.model.position.add(this.moveVelocity.normalize().setLength(distance));
+    // this.moveVelocity.applyEuler(new Euler(0, this.control.euler.y, 0));
 
-    this.model.rotation.y = this.control.euler.y;
+    // this.model.position.add(this.moveVelocity.normalize().setLength(distance));
+
+    // this.model.rotation.y = this.control.euler.y;
   };
 }

@@ -22,20 +22,49 @@ import {
   Vector3,
   Matrix4,
   CubeTextureLoader,
+  LineBasicMaterial,
+  BufferAttribute,
+  LineSegments,
+  BufferGeometry,
 } from "three";
+import { World as PhysicsWorld } from "@dimforge/rapier3d-compat";
 import initSky from "./Sky";
 import loadMap from "./Map";
 import PointerControl from "./PointerControl";
 import Player from "./Player";
+
+// for debug
+let debugLines: LineSegments | null = null;
+
+const debugRapier = (scene: Scene, world: PhysicsWorld) => {
+  if (!debugLines) {
+    let material = new LineBasicMaterial({
+      color: 0xffffff,
+      vertexColors: true,
+    });
+    let geometry = new BufferGeometry();
+    debugLines = new LineSegments(geometry, material);
+    scene.add(debugLines);
+  }
+
+  const { vertices, colors } = world.debugRender();
+  debugLines.geometry.setAttribute(
+    "position",
+    new BufferAttribute(vertices, 3)
+  );
+  debugLines.geometry.setAttribute("color", new BufferAttribute(colors, 4));
+};
 
 export default class World {
   scene;
   camera;
   control;
   player;
+  physicsWorld;
 
   constructor(aspect: number) {
     this.scene = new Scene();
+    this.physicsWorld = new PhysicsWorld({ x: 0.0, y: -9.81, z: 0.0 });
 
     // 平行光
     const directionalLight = new DirectionalLight(0xffffff, 1);
@@ -69,7 +98,7 @@ export default class World {
     this.scene.add(axesHelper);
 
     initSky(this.scene);
-    loadMap(this.scene);
+    loadMap(this.scene, this.physicsWorld);
 
     this.control = new PointerControl(this);
 
@@ -77,6 +106,8 @@ export default class World {
   }
 
   render = () => {
+    this.physicsWorld.step();
+    // debugRapier(this.scene, this.physicsWorld);
     this.player.render();
     this.control.render(this.player.model.position);
   };
