@@ -42,6 +42,7 @@ const init = async () => {
   const renderer = new WebGLRenderer();
   renderer.setSize(width, height);
 
+  // 初始化物理引擎
   await initRapier();
   const world = new World(width / height);
 

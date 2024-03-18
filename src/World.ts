@@ -33,6 +33,7 @@ export default class World {
   constructor(aspect: number) {
     this.scene = new Scene();
 
+    // 平行光
     const directionalLight = new DirectionalLight(0xffffff, 1);
     // 设置光源的方向：通过光源position属性和目标指向对象的position属性计算
     directionalLight.position.set(180, 200, 150);
@@ -68,6 +69,7 @@ export default class World {
     box.position.set(0, 10, 0);
     this.scene.add(box);
 
+    // 坐标轴辅助
     const axesHelper = new AxesHelper(150);
     this.scene.add(axesHelper);
 
