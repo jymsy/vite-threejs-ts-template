@@ -33,14 +33,17 @@ export default class PointerControl {
   group = new Group();
 
   constructor(aspect: number, scene: Scene) {
+    this.group.position.set(-30, -8, 10);
+
     this.camera = new PerspectiveCamera(50, aspect, 1, 3000);
-    this.camera.lookAt(0, 0, 10);
+    this.camera.lookAt(0, 0, 0);
 
     const axesHelper = new AxesHelper(150);
     this.group.add(axesHelper);
 
     this.group.add(this.camera);
-    this.camera.position.set(-1, 3, -5);
+    // this.camera.position.set(-1, 3, -5);
+    this.camera.position.set(-5, 2, 1);
     scene.add(this.group);
 
     document.addEventListener("mousemove", this.onMouseMove);
