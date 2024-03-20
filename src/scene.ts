@@ -48,7 +48,7 @@ const init = async () => {
 
   function render() {
     world.render();
-    renderer.render(world.scene, world.camera); //执行渲染操作}
+    renderer.render(world.scene, world.control.camera); //执行渲染操作}
     requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
   }
   render();
