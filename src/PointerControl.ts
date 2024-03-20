@@ -36,14 +36,13 @@ export default class PointerControl {
     this.group.position.set(-30, -8, 10);
 
     this.camera = new PerspectiveCamera(50, aspect, 1, 3000);
-    this.camera.lookAt(0, 0, 0);
+    this.camera.lookAt(0, 0, 10);
 
-    const axesHelper = new AxesHelper(150);
-    this.group.add(axesHelper);
+    // const axesHelper = new AxesHelper(150);
+    // this.group.add(axesHelper);
 
     this.group.add(this.camera);
-    // this.camera.position.set(-1, 3, -5);
-    this.camera.position.set(-5, 2, 1);
+    this.camera.position.set(-3, 2, -6);
     scene.add(this.group);
 
     document.addEventListener("mousemove", this.onMouseMove);
@@ -66,12 +65,11 @@ export default class PointerControl {
     if (!this.enabled) {
       return;
     }
-    // console.log(event);
     const { movementX, movementY } = event;
     this.euler.y -= movementX * 0.01;
-    this.euler.x -= movementY * 0.01;
+    this.euler.x += movementY * 0.01;
 
-    this.camera.rotation.copy(this.euler);
+    this.group.rotation.copy(this.euler);
   };
 
   render(position: Vector3) {

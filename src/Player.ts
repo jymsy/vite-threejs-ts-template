@@ -43,7 +43,10 @@ export default class Player {
       color: 0xff0000,
     });
     this.model = new Mesh(geometry, material);
-    this.model.position.set(-20, -10, 10);
+    this.model.position.set(-30, -8, 10);
+
+    const axesHelper = new AxesHelper(150);
+    this.model.add(axesHelper);
 
     scene.add(this.model);
 
@@ -89,8 +92,12 @@ export default class Player {
 
     this.moveVelocity.z = Number(this.moveFoward) - Number(this.moveBackward);
     this.moveVelocity.x = Number(this.moveLeft) - Number(this.moveRight);
-
+    this.moveVelocity.setLength(distance);
     // this.moveVelocity.applyEuler(new Euler(0, this.world.control.euler.y, 0));
-    this.model.position.add(this.moveVelocity.setLength(distance));
+    // this.model.position.add(this.moveVelocity.setLength(distance));
+    this.model.translateX(this.moveVelocity.x);
+    this.model.translateY(this.moveVelocity.y);
+    this.model.translateZ(this.moveVelocity.z);
+    this.model.rotation.y = this.world.control.euler.y;
   };
 }
