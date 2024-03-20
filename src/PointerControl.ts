@@ -23,17 +23,25 @@ import {
   Matrix4,
   CubeTextureLoader,
   Euler,
+  Group,
 } from "three";
 
 export default class PointerControl {
   camera;
   enabled = false;
   euler = new Euler(0, 0, 0, "YXZ");
+  group = new Group();
 
-  constructor(aspect: number) {
+  constructor(aspect: number, scene: Scene) {
     this.camera = new PerspectiveCamera(50, aspect, 1, 3000);
-    this.camera.position.set(-30, -8, 10);
-    this.camera.lookAt(30, -8, 10);
+    this.camera.lookAt(0, 0, 10);
+
+    const axesHelper = new AxesHelper(150);
+    this.group.add(axesHelper);
+
+    this.group.add(this.camera);
+    this.camera.position.set(-1, 3, -5);
+    scene.add(this.group);
 
     document.addEventListener("mousemove", this.onMouseMove);
 
@@ -62,4 +70,8 @@ export default class PointerControl {
 
     this.camera.rotation.copy(this.euler);
   };
+
+  render(position: Vector3) {
+    this.group.position.copy(position);
+  }
 }

@@ -67,8 +67,8 @@ export default class World {
     initSky(this.scene);
     loadMap(this.scene);
 
-    this.control = new PointerControl(aspect);
-    this.player = new Player(this.scene);
+    this.control = new PointerControl(aspect, this.scene);
+    this.player = new Player(this.scene, this);
 
     document.addEventListener("keydown", (event: KeyboardEvent) => {
       console.log(event);
@@ -76,6 +76,10 @@ export default class World {
   }
 
   render = () => {
-    this.player.render();
+    if (this.control.enabled) {
+      this.player.render();
+      this.control.render(this.player.model.position);
+    }
+    
   };
 }
