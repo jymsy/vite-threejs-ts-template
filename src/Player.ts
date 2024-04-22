@@ -27,6 +27,7 @@ import {
 } from "three";
 import { RigidBodyDesc, ColliderDesc } from "@dimforge/rapier3d-compat";
 import World from "./World";
+import CapsuleCollider from "./CapsuleCollider";
 
 export default class Player {
   control;
@@ -45,7 +46,7 @@ export default class Player {
       color: 0xff0000,
     });
     this.model = new Mesh(geometry, material);
-    this.model.position.set(-25, -8, 10);
+    // this.model.position.set(-25, -8, 10);
 
     world.scene.add(this.model);
 
@@ -54,11 +55,13 @@ export default class Player {
     document.addEventListener("keydown", this.handleKeyDown);
     document.addEventListener("keyup", this.handleKeyUp);
 
-    let rigidBodyDesc = RigidBodyDesc.dynamic().setTranslation(-25, -8, 10);
-    let rigidBody = world.physicsWorld.createRigidBody(rigidBodyDesc);
+    // let rigidBodyDesc = RigidBodyDesc.dynamic().setTranslation(-25, -8, 10);
+    // let rigidBody = world.physicsWorld.createRigidBody(rigidBodyDesc);
 
-    let example1 = ColliderDesc.ball(0.5);
-    this.collider = world.physicsWorld.createCollider(example1, rigidBody);
+    // let example1 = ColliderDesc.ball(0.5);
+    // this.collider = world.physicsWorld.createCollider(example1, rigidBody);
+
+    this.collider = new CapsuleCollider(world.physicsWorld);
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -105,16 +108,27 @@ export default class Player {
     const delta = this.clock.getDelta();
     const distance = delta * 10;
 
-    const position = this.collider.translation();
-    this.model.position.set(position.x, position.y, position.z);
+    this.moveVelocity.x = Number(this.moveForward) - Number(this.moveBackward);
+    this.moveVelocity.z = Number(this.moveRight) - Number(this.moveLeft);
+    this.moveVelocity.y -= 9.8 * distance * 0.01;
+    this.moveVelocity.applyEuler(new Euler(0, this.control.euler.y, 0));
 
-    // this.moveVelocity.x = Number(this.moveForward) - Number(this.moveBackward);
-    // this.moveVelocity.z = Number(this.moveRight) - Number(this.moveLeft);
+    this.collider.controller.computeColliderMovement(
+      this.collider.collider, // The collider we would like to move.
+      this.moveVelocity.setLength(distance) // The movement we would like to apply if there wasn’t any obstacle.
+    );
+    const movement = this.collider.controller.computedMovement();
+    let newPos = this.collider.body.translation();
+    newPos.x += movement.x;
+    newPos.y += movement.y;
+    newPos.z += movement.z;
+    this.collider.body.setNextKinematicTranslation(newPos);
 
-    // this.moveVelocity.applyEuler(new Euler(0, this.control.euler.y, 0));
+    // const position = this.collider.translation();
+    this.model.position.set(newPos.x, newPos.y, newPos.z);
 
-    // this.model.position.add(this.moveVelocity.normalize().setLength(distance));
+    // this.model.position.add(this.moveVelocity.setLength(distance));
 
-    // this.model.rotation.y = this.control.euler.y;
+    this.model.rotation.y = this.control.euler.y;
   };
 }

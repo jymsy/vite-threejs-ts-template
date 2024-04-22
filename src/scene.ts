@@ -1,4 +1,3 @@
-import GUI from "lil-gui";
 import {
   AmbientLight,
   AxesHelper,
@@ -25,12 +24,6 @@ import {
   CubeTextureLoader,
 } from "three";
 import { init as initRapier } from "@dimforge/rapier3d-compat";
-import { DragControls } from "three/examples/jsm/controls/DragControls";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Stats from "three/examples/jsm/libs/stats.module";
-import * as animations from "./helpers/animations";
-import { toggleFullScreen } from "./helpers/fullscreen";
-import { resizeRendererToDisplaySize } from "./helpers/responsiveness";
 import "./style.css";
 
 import World from "./World";
